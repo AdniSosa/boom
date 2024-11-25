@@ -1,59 +1,71 @@
 const userInput = document.getElementById('userInput');
-const inputValue = userInput.value;
-console.log(inputValue);
 const countdownDiv = document.getElementById('countdown');
 const resultDiv = document.getElementById('result');
 const restartButton = document.getElementById('restart');
 let body = document.body;
 
 
-const randomNumber = Math.floor(Math.random() * 3) + 1;
+let randomNumber;
 let seconds = 6;
 
-const countdown = seconds => new Promise (resolve => setTimeout(resolve, seconds)); 
-
-let counter = Promise.resolve();
-
-body.addEventListener('click', (event) => {
-    //console.log(event)
-    if(event.target !== userInput && event.target !== restartButton) {
+const startGame = () => {
     const countNumber = document.createElement('p');
     countdownDiv.appendChild(countNumber);
-      
-    for(let count = 5; count >= 0; count--) {
-        counter = counter.then (() => {
-            //console.log(count);
-            countNumber.textContent = count;
-            return countdown(1000);
-            
-        })
-        
-    }
+    let counter = seconds;
+    const countDownSet = setInterval(() => {
+        counter--
+        countNumber.innerHTML = `Cuenta atrás: <span>${counter}</span> segundos`;
+        if(counter === 0) {
+            userNumber();
+            clearInterval(countDownSet)
+        }
+    }, 1000)
+}
+
+body.addEventListener('click', (event) => {
+    //console.log(event);
+    if(event.target !== userInput && event.target !== restartButton) {
+       startGame();
     }
 });
 
+userInput.addEventListener('keypress', (event) => {
+    //console.log(event);
+    if(event.key === 'Enter') {
+        startGame();
+    }
+});
+  
 
-userInput.addEventListener("submit", function(e){
-    console.log(e);
-    
-    console.log(inputValue);
-
-  });
-
-const userNumber = (value) => {
+const userNumber = () => {
+    const inputValue = parseInt(userInput.value);
+   // console.log(inputValue)
     const answer = document.createElement('p');
+    const compare = document.createElement('p');
     resultDiv.appendChild(answer);
-    if(value > 3 && value <= 0) {
+    resultDiv.appendChild(compare);
+    if(inputValue > 3 || inputValue <= 0) {
         answer.textContent = 'Debes elegir un número entre 1 y 3.'
-    } else if(value === randomNumber) {
-        answer.textContent = '¡Has salvado el mundo!';
+        
+    } else if(inputValue == randomNumber) {
+        answer.textContent = '¡Enhorabuena, has salvado el mundo! 👑';
+        compare.textContent = `Tu número ${inputValue} es el mismo que el número ${randomNumber}`;
+        answer.classList.add('green');
     } else {
-        answer.textContent = 'La bomba ha estallado';
+        answer.textContent = 'La bomba ha estallado 💣';
+        answer.classList.add('red');
+        compare.textContent = `Tu número ${inputValue} no es el mismo que el número ${randomNumber}`;
     }
 }
 
-/* 2. Introduce un número del 1 al 3 en el campo de entrada.
-3. El juego se iniciará automáticamente con una cuenta atrás de 5 segundos.
-4. Después de la cuenta atrás, el juego evaluará el número introducido.
-5. Se mostrará un mensaje indicando si has salvado el mundo o si la bomba ha estallado. 
-6- clic en el botón "Reiniciar Juego". Esto comenzará una nueva cuenta atrás y permitirá que ingreses otro número.*/
+const restartGame = () => {
+        resultDiv.textContent = '';
+        countdownDiv.textContent = '';
+        userInput.value = '';
+        randomNumber = Math.floor(Math.random() * 3) + 1;
+        console.log(randomNumber); 
+}
+
+
+restartButton.addEventListener('click', restartGame)
+window.addEventListener('load', restartGame);
