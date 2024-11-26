@@ -22,16 +22,16 @@ const startGame = () => {
     }, 1000)
 }
 
-body.addEventListener('click', (event) => {
-    //console.log(event);
-    if(event.target !== userInput && event.target !== restartButton) {
-       startGame();
+userInput.addEventListener('blur', () => {
+    if(userInput.value.length != 0) {
+        startGame();
     }
 });
+  
 
 userInput.addEventListener('keypress', (event) => {
     //console.log(event);
-    if(event.key === 'Enter') {
+    if(event.key === 'Enter' && userInput.value.length != 0) {
         startGame();
     }
 });
@@ -49,12 +49,12 @@ const userNumber = () => {
         
     } else if(inputValue == randomNumber) {
         answer.textContent = '¡Enhorabuena, has salvado el mundo! 👑';
-        compare.textContent = `Tu número ${inputValue} es el mismo que el número ${randomNumber}`;
+        compare.textContent = `Tu número elegido ${inputValue} es el mismo que el número aleatorio ${randomNumber}`;
         answer.classList.add('green');
     } else {
         answer.textContent = 'La bomba ha estallado 💣';
         answer.classList.add('red');
-        compare.textContent = `Tu número ${inputValue} no es el mismo que el número ${randomNumber}`;
+        compare.textContent = `Tu número elegido ${inputValue} no es el mismo que el número aleatorio ${randomNumber}`;
     }
 }
 
